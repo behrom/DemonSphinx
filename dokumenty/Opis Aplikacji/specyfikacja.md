@@ -1,32 +1,49 @@
 # Ogólny zarys aplikacji
-Użytkownik za pomocą słowa klucza wybiera, czy polecenie ma zostać wykonane przez telefon czy komputer, następnie podaje polecenie w formie komenda + ewentualne parametry. Następnie w zależności od tego, czy czy aplikacja ma wykonać polecenie na telefonie czy na komputerze, uruchamia odpowiednie procedury (zob. diagram 2 oraz diagram 3).
 
-## Przykłady wywołań:
-* *komputer włącz Chrome* - uruchomienie Chrome;
+Aplikacja umożliwia sterowanie za pomocą głosu urządzeniem mobilnym działającym pod kontrolą systemu operacyjnego Android oraz, opcjonalnie, połączonym z nim komputerem stacjonarnym. Po uruchomieniu aplikacji na urządzeniu mobilnym działa ona w tle, czekając na wypowiedzenie przez użytkownika słowa-klucza. Po rozpoznaniu słowa-klucza aplikacja rejestruje słowa wypowiedziane przez użytkownika i przetwarza je na tekst, który następnie jest interpretowany jako odpowiednie polecenie do wykonania. Wypowiedziane polecenie może składać się z komendy oraz opcjonalnych parametrów. W zależności od wypowiedzianego przez użytkownika słowa-klucza polecenie jest wykonywane na urządzeniu mobilnym lub na urządzeniu stacjonarnym.
+
+## Przykładowe polecenia
+
+* *komputer włącz Chrome* - uruchomienie przeglądarki Google Chrome na urządzeniu stacjonarnym;
 * *komputer wyłącz* - wyłączenie komputera;
 * *telefon głośniej* - podgłośnienie telefonu;
 * *telefon zadzwoń nazwa_kontaktu* - telefon wykonuje połączenie do kontaktu o podanej nazwie.
 
+# Struktura systemu
+
+System składa się z czterech modułów:
+
+1. Demon działający na telefonie z systemem Android:
+
+  * oczekuje na wypowiedzenie słowa klucza i rozpoznaje jego wypowiedzenie;
+  * po rozpoznaniu słowa-klucza rejestruje dźwięk i za pomocą systemu konwersji mowy na tekst dostarczanego przez Google konwertuje wypowiedziane przez użytkownika słowa na tekst;
+  * interpretuje uzyskany tekst jako polecenie do wykonania;
+  * w zależności od tego, czy polecenie ma zostać wykonane na urządzeniu mobilnym czy stacjonarnym, tworzy proces potomny wykonujący to polecenie lub przesyła informację do serwera działającego na urządzeniu stacjonarnym.
+
+2. GUI do konfiguracji aplikacji na telefonie z systemem Android:
+
+  * umożliwia uruchomienie oraz wyłączenie aplikacji;
+  * pozwala na intuicyjne dostosowywanie istniejących poleceń do potrzeb użytkownika oraz dodawanie nowych poleceń.
+
+3. Serwer na urządzeniu stacjonarnym:
+
+  * oczekuje na nadejście z urządzenia mobilnego polecenia do wykonania;
+  * po otrzymaniu polecenia tworzy proces potomny wykonujący to polecenie.
+
+4. GUI do konfiguracji serwera na urządzeniu stacjonarnym:
+
+  * ... do czego służy? ...
+
+# Wymagania
+
 ## Przykładowe czynności, jakie obsługuje aplikacja:
+
 * wyłączenie telefonu/komputera
 * zwiększenie/zmniejszenie głośności na telefonie (multimediów, alarmów, dzwonka)
 * zwiększenie/zmniejszenie głośności na komputerze
 * zwiększenie/zmniejszenie jasności ekranu (komputer, telefon) 
 * zadzwoń do osoby o zadanej nazwie kontaktu (telefon)
 * następny utwór/strona (komputer/telefon)
-
-# Struktura systemu
-## Serwer na komputerze stacjonarnym
-
-Nasłuchuje, czekając na nadejście z urządzenia mobilnego polecenia, jakie ma zostać wykonane.
-
-## Demon na telefonie z systemem Android
-
-Czeka na nadejście polecenia. Po otrzymaniu polecenia tworzy procesy potomne, komunikujące się z serwerem na urządzeniu stacjonarnym lub wykonujące odpowiednie akcje na urządzeniu z systemem Android.
-
-## GUI do konfiguracji aplikacji na urządzeniu z systemem Android
-
-## GUI do konfiguracji serwera na komputerze stacjonarnym
 
 # Uwagi dotyczące implementacji
 ## Serwer na komputerze
