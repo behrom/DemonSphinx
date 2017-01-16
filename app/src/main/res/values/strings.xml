@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">DemonSphinx</string>
+    <string name="btnServiceInit">Start Service</string>
+</resources>
