@@ -14,8 +14,12 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
-public class MainActivity extends AppCompatActivity {
+import java.io.File;
+import java.io.IOException;
 
+import edu.cmu.pocketsphinx.Assets;
+
+public class MainActivity extends AppCompatActivity {
     private ToggleButton btnStartStopService;
     private BroadcastReceiver receiver;
 
@@ -47,9 +51,7 @@ public class MainActivity extends AppCompatActivity {
                 btnStartStopService.setText(s);
             }
         };
-
     }
-
 
     @Override
     protected void onStart() {
