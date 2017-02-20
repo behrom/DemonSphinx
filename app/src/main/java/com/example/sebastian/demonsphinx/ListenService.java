@@ -1,7 +1,6 @@
 package com.example.sebastian.demonsphinx;
 
 import android.app.Service;
-
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.Vibrator;
@@ -46,21 +45,19 @@ public class ListenService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        //Log.d("HelloServices", "Called onStartCommand() method.");
-        //vibrator.vibrate(vibPattern, 0);
+        Log.d("HelloServices", "Called onStartCommand() method.");
+        vibrator.vibrate(vibPattern, 0);
         sendResult("Service started");
-
-        //Log.d("Service", recognise.getResult());
 
         return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public void onDestroy() {
-        //Log.d("HelloServices", "Called onDestroy() method.");
+        Log.d("HelloServices", "Called onDestroy() method.");
         vibrator.cancel();
 
-        //recognise.stopRecognition();
+        recognise.stopRecognition();
 
         sendResult("Service stopped");
         super.onDestroy();
