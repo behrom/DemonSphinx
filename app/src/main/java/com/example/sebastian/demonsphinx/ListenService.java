@@ -8,10 +8,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 public class ListenService extends Service {
-    // vibrator (test czy service dziala)
-    private Vibrator vibrator;
-
-    private SphinxRecognise recognise;
+    private TalkRecogniser recognise;
 
     // zmienna odpowiedzialna za wysylanie komunikatow broadcast w aplikacji
     private LocalBroadcastManager broadcaster;
@@ -21,9 +18,6 @@ public class ListenService extends Service {
 
     // ??
     static final public String COPA_MESSAGE = "com.controlj.copame.backend.COPAService.COPA_MSG";
-
-    // zmienna odpowiedzialna za konfigurację vibrator
-    private long[] vibPattern = {0, 200, 0};
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -36,17 +30,17 @@ public class ListenService extends Service {
 
         broadcaster = LocalBroadcastManager.getInstance(this);
 
-        vibrator = (Vibrator)getSystemService(VIBRATOR_SERVICE);
+
         Log.d("HelloServices", "Called onCreate() method.");
 
-        recognise = new SphinxRecognise(this);
+        recognise = new TalkRecogniser(this);
     }
 
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("HelloServices", "Called onStartCommand() method.");
-        vibrator.vibrate(vibPattern, 0);
+        // vibrator.vibrate(vibPattern, 0);
         sendResult("Service started");
 
         return super.onStartCommand(intent, flags, startId);
@@ -55,7 +49,6 @@ public class ListenService extends Service {
     @Override
     public void onDestroy() {
         Log.d("HelloServices", "Called onDestroy() method.");
-        vibrator.cancel();
 
         recognise.stopRecognition();
 
