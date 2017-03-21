@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Speak</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_about">O Aplikacji</string>
+    <string name="available_computers">Dostępne Urządzenia</string>
+    <string-array name="computers">
+        <item>Komputer 1</item>
+        <item>Komputer 2</item>
+        <item>Komputer 3</item>
+        <item>Komputer 4</item>
+        <item>Komputer 5</item>
+        <item>Komputer 6</item>
+        <item>Komputer 7</item>
+        <item>Komputer 8</item>
+        <item>Komputer 9</item>
+        <item>Komputer 10</item>
+
+    </string-array>
+</resources>
