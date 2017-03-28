@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">DemonSphinx</string>
     <string name="btnServiceInit">Start Service</string>
+    <string name="speech_not_supported">Sorry! Your device doesn\'t support speech input</string>
 </resources>

@@ -7,7 +7,8 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 public class ListenService extends Service {
-    private SphinxRecogniser recognise;
+//    private SphinxRecogniser sphinxRecognise;
+    private GoogleRecogniser googleRecogniser;
 
     // zmienna odpowiedzialna za wysylanie komunikatow broadcast w aplikacji
     private LocalBroadcastManager broadcaster;
@@ -31,7 +32,8 @@ public class ListenService extends Service {
 
         Log.d("HelloServices", "Called onCreate() method.");
 
-        recognise = new SphinxRecogniser(this);
+//        sphinxRecognise = new SphinxRecogniser(this);
+        googleRecogniser = new GoogleRecogniser();
     }
 
 
@@ -48,7 +50,7 @@ public class ListenService extends Service {
     public void onDestroy() {
         Log.d("HelloServices", "Called onDestroy() method.");
 
-        recognise.stopRecognition();
+//        sphinxRecognise.stopRecognition();
 
         sendResult("Service stopped");
         super.onDestroy();
