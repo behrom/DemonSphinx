@@ -14,7 +14,7 @@ import edu.cmu.pocketsphinx.RecognitionListener;
 import edu.cmu.pocketsphinx.SpeechRecognizer;
 import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
 
-public class TalkRecogniser implements RecognitionListener {
+public class SphinxRecogniser implements RecognitionListener {
     private static final String KWS_SEARCH = "wakeup";
     private static final String DEVICES_SEARCH = "devices";
 
@@ -26,7 +26,7 @@ public class TalkRecogniser implements RecognitionListener {
     private SpeechRecognizer recognizer;
 
     // konstruktor
-    public TalkRecogniser(Context con) {
+    public SphinxRecogniser(Context con) {
         context = con;
 
         runRecognizerSetup();

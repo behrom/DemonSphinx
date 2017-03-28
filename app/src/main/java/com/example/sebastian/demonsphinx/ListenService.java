@@ -3,12 +3,11 @@ package com.example.sebastian.demonsphinx;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.os.Vibrator;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 public class ListenService extends Service {
-    private TalkRecogniser recognise;
+    private SphinxRecogniser recognise;
 
     // zmienna odpowiedzialna za wysylanie komunikatow broadcast w aplikacji
     private LocalBroadcastManager broadcaster;
@@ -30,10 +29,9 @@ public class ListenService extends Service {
 
         broadcaster = LocalBroadcastManager.getInstance(this);
 
-
         Log.d("HelloServices", "Called onCreate() method.");
 
-        recognise = new TalkRecogniser(this);
+        recognise = new SphinxRecogniser(this);
     }
 
 
