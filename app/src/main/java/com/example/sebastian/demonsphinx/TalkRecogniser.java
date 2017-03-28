@@ -16,8 +16,7 @@ import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
 
 public class TalkRecogniser implements RecognitionListener {
     private static final String KWS_SEARCH = "wakeup";
-    private static final String COMPUTER_SEARCH = "COMPUTER";
-    private static final String PHONE_SEARCH = "PHONE";
+    private static final String DEVICES_SEARCH = "devices";
 
     private Context context;
     // zmienna przechowujaca wysluchana wartosc
@@ -58,7 +57,7 @@ public class TalkRecogniser implements RecognitionListener {
         result = hypothesis.getHypstr();
         Log.d("onPartialResult", "###############################" + result);
 
-        recognizer.stop();
+        // recognizer.stop();
     }
 
     @Override
@@ -69,13 +68,13 @@ public class TalkRecogniser implements RecognitionListener {
             Log.d("onResult", "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" + result);
 
             switch (result) {
-                case COMPUTER_SEARCH: {
+                case "komputer": {
                     Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
 
                     computerRecognised();
                 } break;
 
-                case PHONE_SEARCH: {
+                case "telefon": {
                     Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
 
                     phoneRecognised();
@@ -87,7 +86,10 @@ public class TalkRecogniser implements RecognitionListener {
                     recognizer.startListening(KWS_SEARCH);
                 }
             }
+
         }
+
+        Toast.makeText(context, hypothesis.getHypstr(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -146,11 +148,12 @@ public class TalkRecogniser implements RecognitionListener {
             recognizer.addListener(this);
 
             // Create keyword-activation search.
-            recognizer.addKeyphraseSearch(KWS_SEARCH, COMPUTER_SEARCH);
+            // recognizer.addKeyphraseSearch(KWS_SEARCH, COMPUTER_SEARCH);
 
             // Create language model search.
-            File languageModel = new File(modelDir, "lm/devices.lm");
-            recognizer.addNgramSearch(KWS_SEARCH, languageModel);
+            // File languageModel = new File(modelDir, "lm/devices.lm");
+            // recognizer.addNgramSearch(KWS_SEARCH, languageModel);
+            recognizer.addGrammarSearch(KWS_SEARCH, new File(modelDir, "grammar/devices.gram"));
         } catch (Exception e) {
             e.printStackTrace();
         }
