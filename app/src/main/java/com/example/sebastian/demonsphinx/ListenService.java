@@ -1,17 +1,17 @@
 package com.example.sebastian.demonsphinx;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.Toast;
 
 public class ListenService extends Service {
-//    private SphinxRecogniser sphinxRecognise;
-    private GoogleRecogniser googleRecogniser;
-
-    // zmienna odpowiedzialna za wysylanie komunikatow broadcast w aplikacji
-    private LocalBroadcastManager broadcaster;
+    private SphinxRecogniser sphinxRecognise;
 
     // ??
     static final public String COPA_RESULT = "com.controlj.copame.backend.COPAService.REQUEST_PROCESSED";
@@ -21,6 +21,7 @@ public class ListenService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
+
         return null;
     }
 
@@ -28,14 +29,33 @@ public class ListenService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        broadcaster = LocalBroadcastManager.getInstance(this);
-
         Log.d("HelloServices", "Called onCreate() method.");
 
-//        sphinxRecognise = new SphinxRecogniser(this);
-        googleRecogniser = new GoogleRecogniser();
+        // Register to receive messages.
+        // We are registering an observer (mMessageReceiver) to receive Intents
+        // with actions named "custom-event-name".
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter("GoogleRecogniser"));
+
+        sphinxRecognise = new SphinxRecogniser(this);
     }
 
+    // Our handler for received Intents. This will be called whenever an Intent
+    // with an action named "custom-event-name" is broadcasted.
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            String message = intent.getStringExtra("result");
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+
+            startRecognition();
+        }
+    };
+
+    private void startRecognition(){
+        sphinxRecognise = new SphinxRecogniser(this);
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -50,7 +70,9 @@ public class ListenService extends Service {
     public void onDestroy() {
         Log.d("HelloServices", "Called onDestroy() method.");
 
-//        sphinxRecognise.stopRecognition();
+        sphinxRecognise.stopRecognition();
+
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
 
         sendResult("Service stopped");
         super.onDestroy();
@@ -61,6 +83,6 @@ public class ListenService extends Service {
         Intent intent = new Intent(COPA_RESULT);
         if (message != null)
             intent.putExtra(COPA_MESSAGE, message);
-        broadcaster.sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 }

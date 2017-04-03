@@ -1,6 +1,7 @@
 package com.example.sebastian.demonsphinx;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.AsyncTask;
@@ -57,7 +58,7 @@ public class SphinxRecogniser implements RecognitionListener {
         result = hypothesis.getHypstr();
         Log.d("onPartialResult", "###############################" + result);
 
-        // recognizer.stop();
+        recognizer.stop();
     }
 
     @Override
@@ -88,8 +89,6 @@ public class SphinxRecogniser implements RecognitionListener {
             }
 
         }
-
-        Toast.makeText(context, hypothesis.getHypstr(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -159,17 +158,33 @@ public class SphinxRecogniser implements RecognitionListener {
         }
     }
 
+    public void test() {
+
+    }
+
     private void computerRecognised() {
         ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
         toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
 
-        recognizer.startListening(KWS_SEARCH);
+        Intent googleActivity = new Intent();
+        googleActivity.putExtra("Mode", "Komputer");
+        googleActivity.setClass(context, GoogleRecogniser.class);
+
+        googleActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(googleActivity);
+
+//        recognizer.startListening(KWS_SEARCH);
     }
 
     private void phoneRecognised() {
         ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
         toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 50);
 
-        recognizer.startListening(KWS_SEARCH);
+        Intent googleActivity = new Intent();
+        googleActivity.putExtra("Mode", "Telefon");
+        googleActivity.setClass(context, GoogleRecogniser.class);
+
+        googleActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(googleActivity);
     }
 }
