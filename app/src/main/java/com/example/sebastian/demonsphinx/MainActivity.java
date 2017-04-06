@@ -4,21 +4,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.speech.SpeechRecognizer;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
-import java.io.File;
-import java.io.IOException;
-
-import edu.cmu.pocketsphinx.Assets;
-
+// TRZEBA TO PRZEPISAC DO KODU OD HUBERTA!!!
 public class MainActivity extends AppCompatActivity {
     private ToggleButton btnStartStopService;
     private BroadcastReceiver receiver;
@@ -46,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                String s = intent.getStringExtra(ListenService.COPA_MESSAGE);
+                String s = intent.getStringExtra(ListenService.SERVICE_MESSAGE);
                 Log.d("intent", s);
                 btnStartStopService.setText(s);
             }
@@ -58,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         super.onStart();
         LocalBroadcastManager.getInstance(this).registerReceiver((receiver),
-                new IntentFilter(ListenService.COPA_RESULT)
+                new IntentFilter(ListenService.SERVICE_STATUS)
         );
     }
 

@@ -7,82 +7,100 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.widget.Toast;
 
+/**
+ * Serwis działający w tle i obsługujący rozpoznawanie mowy.
+ */
 public class ListenService extends Service {
     private SphinxRecogniser sphinxRecognise;
 
-    // ??
-    static final public String COPA_RESULT = "com.controlj.copame.backend.COPAService.REQUEST_PROCESSED";
+    /**
+     * Nazwa broadcastu dzieki ktoremu dowiadujemy sie o statusie serwisu.
+     */
+    static final public String SERVICE_STATUS = "SERVICE_STATUS";
 
-    // ??
-    static final public String COPA_MESSAGE = "com.controlj.copame.backend.COPAService.COPA_MSG";
+    /**
+     * Rodzaj wiadomosci przesylanej do okna glownego aplikacji
+     * W celu zmiany statusu przycisku od serwisu
+     */
+    static final public String SERVICE_MESSAGE = "STATUS_MESSAGE";
 
     @Override
     public IBinder onBind(Intent intent) {
-
         return null;
     }
 
+    /**
+     * Metoda wywolywana za kazdym razem gdy tworzony jest serwis.
+     * Rejestruje ona Broadcast, dzieki ktoremu
+     * przesylane jest rozpoznane polecenie.
+     */
     @Override
     public void onCreate() {
         super.onCreate();
 
-        Log.d("HelloServices", "Called onCreate() method.");
-
-        // Register to receive messages.
-        // We are registering an observer (mMessageReceiver) to receive Intents
-        // with actions named "custom-event-name".
+        // Rejestracja Broadcastu w celu otrzymywania wiadomosci z GoogleRecogniser
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter("GoogleRecogniser"));
 
+        // rozpoczecie nasluchiwania na slowo klucz
         sphinxRecognise = new SphinxRecogniser(this);
     }
 
-    // Our handler for received Intents. This will be called whenever an Intent
-    // with an action named "custom-event-name" is broadcasted.
+    // Uchwyt do intentu, wywolywany za kazdym razem
+    // gdy przyjdzie wiadomosc z GoogleRecogniser
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            // Get extra data included in the Intent
-            String message = intent.getStringExtra("result");
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        // Pobranie dodatkowych danych z intentu
+        String message = intent.getStringExtra("result");
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 
-            startRecognition();
+        // uruchomienie na nowo nasluchiwania na slowo klucz
+        startRecognition();
         }
     };
 
+    // funkcja pozwalajaca by rozpoczac na nowo nasluchiwanie
+    // na slowo klucz
     private void startRecognition(){
         sphinxRecognise = new SphinxRecogniser(this);
     }
 
+    // metoda ktora wywolywana jest za kazdym razem gdy uruchomiony
+    // zostanie serwis
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("HelloServices", "Called onStartCommand() method.");
-        // vibrator.vibrate(vibPattern, 0);
+        // przeslanie statusu serwisu
         sendResult("Service started");
 
         return super.onStartCommand(intent, flags, startId);
     }
 
+    // metoda ktora wywolywana jest za kazdym razem gdy
+    // serwis zostanie wylaczony
     @Override
     public void onDestroy() {
-        Log.d("HelloServices", "Called onDestroy() method.");
-
         sphinxRecognise.stopRecognition();
 
+        // wyrejestrowanie Broadcastu sluzacego do otrzymywania wiadomosci z GoogleRecogniser
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
 
+        // przeslanie statusu serwisu
         sendResult("Service stopped");
         super.onDestroy();
     }
 
-
+    /**
+     * metoda dzieki ktorej przesylany jest status serwisu
+     * do glownego okna aplikacji
+     * @param message tresc wiadomosci przesylanej do glownego okna aplikacji
+     */
     public void sendResult(String message) {
-        Intent intent = new Intent(COPA_RESULT);
+        Intent intent = new Intent(SERVICE_STATUS);
         if (message != null)
-            intent.putExtra(COPA_MESSAGE, message);
+            intent.putExtra(SERVICE_MESSAGE, message);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 }

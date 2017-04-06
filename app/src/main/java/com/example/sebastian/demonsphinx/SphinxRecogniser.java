@@ -15,24 +15,31 @@ import edu.cmu.pocketsphinx.RecognitionListener;
 import edu.cmu.pocketsphinx.SpeechRecognizer;
 import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
 
+/**
+ * Klasa umozliwiajaca nasluchiwanie na slowo klucz.
+ */
 public class SphinxRecogniser implements RecognitionListener {
     private static final String KWS_SEARCH = "wakeup";
     private static final String DEVICES_SEARCH = "devices";
 
     private Context context;
-    // zmienna przechowujaca wysluchana wartosc
+
+    // zmienna przechowujaca rozpoznana wartosc
     private String result = "NO RESULT";
 
     // zmienna odpowiedzialna za rozpoznawanie mowy dla PocketSphinxa
     private SpeechRecognizer recognizer;
 
-    // konstruktor
+
     public SphinxRecogniser(Context con) {
         context = con;
 
         runRecognizerSetup();
     }
 
+    /**
+     * metoda przerywajaca nasluchiwanie na slowo klucz
+     */
     public void stopRecognition() {
         recognizer.stop();
         recognizer.shutdown();
@@ -44,42 +51,44 @@ public class SphinxRecogniser implements RecognitionListener {
 
     }
 
+    // metoda od PocketSphinx wywolywana gdy zakonczone zostanie
+    // rozpoznawanie
     @Override
     public void onEndOfSpeech() {
         if (!recognizer.getSearchName().equals(KWS_SEARCH))
             recognizer.startListening(KWS_SEARCH);
     }
 
+    // metoda wywolywana jest za kazdym razem gdy rozpoznany
+    // zostanie fragment wypowiedzi
     @Override
     public void onPartialResult(Hypothesis hypothesis) {
         if (hypothesis == null)
             return;
 
         result = hypothesis.getHypstr();
-        Log.d("onPartialResult", "###############################" + result);
 
         recognizer.stop();
     }
 
+    // metoda wywolywana jest za kazdym razem gdy
+    // rozpoznane zostanie slowo klucz
     @Override
     public void onResult(Hypothesis hypothesis) {
 
         if (hypothesis != null) {
             result = hypothesis.getHypstr();
-            Log.d("onResult", "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" + result);
-
             switch (result) {
                 case "komputer": {
-                    Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
 
                     computerRecognised();
                 } break;
 
                 case "telefon": {
-                    Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
 
                     phoneRecognised();
-
                 } break;
 
                 default: {
@@ -87,7 +96,6 @@ public class SphinxRecogniser implements RecognitionListener {
                     recognizer.startListening(KWS_SEARCH);
                 }
             }
-
         }
     }
 
@@ -96,6 +104,8 @@ public class SphinxRecogniser implements RecognitionListener {
 
     }
 
+    // metoda wywolywana w momencie gdy czas na rozpoznanie
+    // wypowiedzi sie skonczy
     @Override
     public void onTimeout() {
         recognizer.startListening(KWS_SEARCH);
@@ -103,8 +113,8 @@ public class SphinxRecogniser implements RecognitionListener {
 
     // ustawienie sciezek do plikow dla sphinxa
     private void runRecognizerSetup() {
-        // Recognizer initialization is a time-consuming and it involves IO,
-        // so we execute it in async task
+        // Inicjalizacja PocketSphinxa zajmuje troche czasu dlatego
+        // jest w osobnym watku
         new AsyncTask<Void, Void, Exception>() {
             @Override
             protected Exception doInBackground(Void... params) {
@@ -113,7 +123,6 @@ public class SphinxRecogniser implements RecognitionListener {
                     File assetsDir = null;
                     assets = new Assets(context);
                     assetsDir = assets.syncAssets();
-                    Log.d("@@@@@@@@@@@@Assets", "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"+assetsDir.getAbsolutePath());
 
                     setupRecognizer(assetsDir);
                 } catch (IOException e) {
@@ -146,40 +155,36 @@ public class SphinxRecogniser implements RecognitionListener {
 
             recognizer.addListener(this);
 
-            // Create keyword-activation search.
-            // recognizer.addKeyphraseSearch(KWS_SEARCH, COMPUTER_SEARCH);
-
-            // Create language model search.
-            // File languageModel = new File(modelDir, "lm/devices.lm");
-            // recognizer.addNgramSearch(KWS_SEARCH, languageModel);
             recognizer.addGrammarSearch(KWS_SEARCH, new File(modelDir, "grammar/devices.gram"));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void test() {
-
-    }
-
+    // metoda wywolywana gdy rozpoznane zostanie slowo Komputer
     private void computerRecognised() {
+        // wygenerowanie odpowiedniego sygnalu dzwiekowego
         ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
         toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
 
+        // Utworzenie nowego activity, dzieki ktoremu
+        // dalsza czesc polecen bedzie rozpoznawana
         Intent googleActivity = new Intent();
         googleActivity.putExtra("Mode", "Komputer");
         googleActivity.setClass(context, GoogleRecogniser.class);
 
         googleActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(googleActivity);
-
-//        recognizer.startListening(KWS_SEARCH);
     }
 
+    // metoda wywolywana gdy rozpoznane zostanie slowo Telefon
     private void phoneRecognised() {
+        // wygenerowanie odpowiedniego sygnalu dzwiekowego
         ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
         toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 50);
 
+        // Utworzenie nowego activity, dzieki ktoremu
+        // dalsza czesc polecen bedzie rozpoznawana
         Intent googleActivity = new Intent();
         googleActivity.putExtra("Mode", "Telefon");
         googleActivity.setClass(context, GoogleRecogniser.class);
