@@ -53,12 +53,18 @@ public class ListenService extends Service {
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-        // Pobranie dodatkowych danych z intentu
-        String message = intent.getStringExtra("result");
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            // Pobranie dodatkowych danych z intentu
+            String message = intent.getStringExtra("result");
 
-        // uruchomienie na nowo nasluchiwania na slowo klucz
-        startRecognition();
+            String[] parts = message.split(";;");
+
+            if(parts.length > 1) {
+                Toast.makeText(context, parts[0] + " 99999 " + parts[1], Toast.LENGTH_SHORT).show();
+            }
+
+
+            // uruchomienie na nowo nasluchiwania na slowo klucz
+            startRecognition();
         }
     };
 

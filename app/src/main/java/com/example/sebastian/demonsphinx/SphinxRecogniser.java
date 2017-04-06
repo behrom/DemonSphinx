@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 import java.io.File;
 import java.io.IOException;
@@ -190,6 +189,6 @@ public class SphinxRecogniser implements RecognitionListener {
         googleActivity.setClass(context, GoogleRecogniser.class);
 
         googleActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(googleActivity);
+       context.startActivity(googleActivity);
     }
 }
