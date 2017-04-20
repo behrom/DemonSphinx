@@ -60,6 +60,12 @@ public class ListenService extends Service {
 
             if(parts.length > 1) {
                 Toast.makeText(context, parts[0] + " 99999 " + parts[1], Toast.LENGTH_SHORT).show();
+                Intent new_intent = new Intent();
+                new_intent.putExtra("Polecenie", parts[1]);
+                new_intent.setClass(context, New_Intent.class);
+
+                new_intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(new_intent);
             }
 
 

@@ -189,6 +189,6 @@ public class SphinxRecogniser implements RecognitionListener {
         googleActivity.setClass(context, GoogleRecogniser.class);
 
         googleActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-       context.startActivity(googleActivity);
+        context.startActivity(googleActivity);
     }
 }
