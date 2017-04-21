@@ -47,6 +47,7 @@ public class New_Intent extends Activity {
 
        // Tutaj bedzie odczyt ustawien
         order[0] = sharedPreferences.getString("Call", " ").toLowerCase();
+//        order[0] = "zadzwoń";
 
         order[1] = sharedPreferences.getString("BrightnesPlus", " ").toLowerCase();
         //ile procent jasnosci ekranu proponuj�, �eby na sztywno by�o narzucone,�e wielokrotno�� 5
