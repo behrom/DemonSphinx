@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.net.Uri;
@@ -18,7 +19,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -32,25 +32,40 @@ public class New_Intent extends Activity {
 	private Window window;
     private String[] order = new String[7];
     private int percentagePower;
-    private int percentageBrightness;
+    private int percentageBrightnessMore;
+    private int percentageBrightnessLess;
     private String player;
+    private String value;
+    private int value1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+//        setContentView(R.layout.activity_main);
 
-        // Tutaj bedzie odczyt ustawien
-        order[0] = "zadzwoń";
-        order[1] = "jaśniej";
-        order[2] = "ciemniej";
-        order[3] = "ciszej";
-        order[4] = "głośniej";
-        order[5] = "aparat";
-        order[6] = "przeglądarka";
-        player = "odtwarzacz";
-        percentagePower = 50; //ile procent g�o�no�ci
-        percentageBrightness = 50; //ile procent jasnosci ekranu proponuj�, �eby na sztywno by�o narzucone,�e wielokrotno�� 5
+        SharedPreferences sharedPreferences = getSharedPreferences("Settings",MODE_PRIVATE);
+
+       // Tutaj bedzie odczyt ustawien
+        order[0] = sharedPreferences.getString("Call", " ").toLowerCase();
+
+        order[1] = sharedPreferences.getString("BrightnesPlus", " ").toLowerCase();
+        //ile procent jasnosci ekranu proponuj�, �eby na sztywno by�o narzucone,�e wielokrotno�� 5
+        percentageBrightnessMore = sharedPreferences.getInt("BrightnesPlus1", 1);
+
+        order[2] = sharedPreferences.getString("BrightnesMinus", " ").toLowerCase();
+        percentageBrightnessLess = sharedPreferences.getInt("BrightnesMinus1",1  ); //ile procent jasnosci ekranu proponuj�, �eby na sztywno by�o narzucone,�e wielokrotno�� 5
+
+        order[3] = sharedPreferences.getString("VolumeMinus"," "  ).toLowerCase();
+
+        order[4] = sharedPreferences.getString("VolumePlus"," "  ).toLowerCase();
+
+        order[5] = sharedPreferences.getString("Aparat"," "  ).toLowerCase();
+
+        order[6] = sharedPreferences.getString("Browser"," "  ).toLowerCase();
+
+        player = sharedPreferences.getString("Multimedia"," "  ).toLowerCase();
+        percentagePower = sharedPreferences.getInt("Multimedia1",1  );
+
         Bundle b = getIntent().getExtras();
         command = b.getString("Polecenie");
 
@@ -58,17 +73,18 @@ public class New_Intent extends Activity {
     }
 
     private void execute() {
+        command = command.toLowerCase();
+
         String[] tab = command.split(" ");
-        Toast.makeText(this, "Działam " + tab[0], Toast.LENGTH_SHORT).show();
 
         if(tab[0].equals(order[0])) {
             call(tab);
         }
         else if(tab[0].equals(order[1])){
-            moreClearly(percentageBrightness);
+            moreClearly(percentageBrightnessMore);
         }
         else if(tab[0].equals(order[2])) {
-            dark(percentageBrightness);
+            dark(percentageBrightnessLess);
         }
         else if(tab[0].equals(order[3])) {
             quieter();
@@ -88,6 +104,8 @@ public class New_Intent extends Activity {
         else if(tab[0].equals(order[6])) {
             browser(tab);
         }
+
+        finish();
     }
 
     @Override
@@ -120,7 +138,12 @@ public class New_Intent extends Activity {
 			ArrayList<Kontakty> listaKontaktow = Kontakty.listaWszystkichKontaktow(contentResolver);
 			for (Kontakty kontakt : listaKontaktow) {
 				String test2 = kontakt.nazwaWyswietlana;
-				if (connection.equals(test2)) {
+
+                String test3 = test2.toLowerCase();
+
+                Log.d("@@@@@@@@@@KONTAKT", test3);
+
+                if (connection.equals(test3)) {
 					number = kontakt.telefonKomorkowy;
 					Uri nr = Uri.parse("tel:" + number);
 					Intent intencja = new Intent(Intent.ACTION_CALL, nr);
@@ -135,8 +158,10 @@ public class New_Intent extends Activity {
 						// for ActivityCompat#requestPermissions for more details.
 						return;
 					}
+
+					// poczekac na zakonczenie intencji ale zakonczenie nie minimalizacje
 					startActivity(intencja);
-				}	
+				}
 			}
 		} else System.out.println("Nie podales kontaktu");
 	}

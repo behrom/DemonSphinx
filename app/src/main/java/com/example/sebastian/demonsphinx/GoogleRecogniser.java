@@ -1,16 +1,17 @@
 package com.example.sebastian.demonsphinx;
 
-import java.util.ArrayList;
-import android.speech.RecognitionListener;
-import android.speech.RecognizerIntent;
-import android.speech.SpeechRecognizer;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class GoogleRecogniser extends Activity implements
         RecognitionListener {
@@ -163,7 +164,12 @@ public class GoogleRecogniser extends Activity implements
         intent.putExtra("result", strResult);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
-        // zamkniecie okna
+//        Intent startMain = new Intent(Intent.ACTION_MAIN);
+//        startMain.addCategory(Intent.CATEGORY_HOME);
+//        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        startActivity(startMain);
+
+        //
         finish();
     }
 }

@@ -6,8 +6,10 @@ import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.AsyncTask;
 import android.widget.Toast;
+
 import java.io.File;
 import java.io.IOException;
+
 import edu.cmu.pocketsphinx.Assets;
 import edu.cmu.pocketsphinx.Hypothesis;
 import edu.cmu.pocketsphinx.RecognitionListener;
